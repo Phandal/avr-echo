@@ -39,7 +39,7 @@ int main(void)
   {
     printf("Hello");
     printf("There");
-    _delay_ms(10000);
+    _delay_ms(1000);
   }
 
   return 0;
@@ -47,7 +47,7 @@ int main(void)
 
 void ioinit()
 {
-  // NOTE: F_CPU and BAUD must be set before including this header
+  // NOTE: F_CPU and BAUD must be defined before including this header
 #include <util/setbaud.h>
   UBRR0H = UBRRH_VALUE;
   UBRR0L = UBRRL_VALUE;
@@ -61,22 +61,23 @@ int usart_putchar(char c, FILE *stream)
 {
 
   char p = peekch();
-  if (p == 0 && (bit_is_set(UCSR0A, UDRE0) || bit_is_clear(UCSR0B, UDRIE0)))
+  // Start of transmission means nothing in buffer
+  if (p == 0 && bit_is_set(UCSR0A, UDRE0))
   {
     UDR0 = (uint8_t)c;
     UCSR0B |= _BV(UDRIE0);
   }
+  // Transmission has completed and buffer is not empty
+  else if (p != 0 && bit_is_clear(UCSR0B, UDRIE0))
+  {
+    UDR0 = getch();
+    UCSR0B |= _BV(UDRIE0);
+  }
+  // Store byte for transmission
   else
   {
     putch(c);
   }
 
-  // I think the problem is that data register is empty, however the read and write positions are not the same,
-  // This means that the interrupt enable flas is turned off and never reenabled.
-  if (bit_is_clear(UCSR0B, UDRIE0) && peekch() != 0)
-  {
-    UDR0 = getch();
-    UCSR0B |= _BV(UDRIE0);
-  }
   return 0;
 }
