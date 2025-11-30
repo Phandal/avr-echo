@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+firmware = './build/echo.hex'
+elf = './build/echo.elf'
+gdbServerPort = 3333
