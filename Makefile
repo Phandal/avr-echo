@@ -4,12 +4,12 @@ CFLAGS = -Wall -Werror -g
 BIN = build/echo.elf
 HEX = build/echo.hex
 
-all: $(HEX)
+all: build | $(HEX)
 
 $(HEX): $(BIN)
 	avr-objcopy -O ihex -j .text -j .data -R .eeprom $^ $@
 
-$(BIN): $(OBJS) | build
+$(BIN): $(OBJS)
 	avr-gcc -Os -mmcu=$(MMCU) $(CFLAGS) -o $@ $^
 
 build/%.o: src/%.c

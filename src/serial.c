@@ -2,8 +2,7 @@
 
 #include <avr/interrupt.h>
 
-void serial_init(void)
-{
+void serial_init(void) {
   UBRR0H = UBRRH_VALUE;
   UBRR0L = UBRRL_VALUE;
 
@@ -15,38 +14,29 @@ void serial_init(void)
   sei();
 }
 
-ISR(USART_UDRE_vect)
-{
+ISR(USART_UDRE_vect) {
   char c = getch();
-  if (c == 0)
-  {
+  if (c == 0) {
     // Clear the interrupt flag from happening
     UCSR0B &= ~_BV(UDRIE0);
-  }
-  else
-  {
+  } else {
     // Load the data register with character to send
     UDR0 = c;
   }
 }
 
-int serial_putchar(char c, FILE *stream)
-{
+int serial_putchar(char c, FILE *stream) {
 
   char p = peekch();
   // Start of transmission means nothing in buffer
-  if (p == 0 && bit_is_set(UCSR0A, UDRE0))
-  {
+  if (p == 0 && bit_is_set(UCSR0A, UDRE0)) {
     UDR0 = (uint8_t)c;
     UCSR0B |= _BV(UDRIE0);
-  }
-  else
-  {
+  } else {
     putch(c);
 
     // Transmission has completed and buffer is not empty
-    if (p != 0 && bit_is_clear(UCSR0B, UDRIE0))
-    {
+    if (p != 0 && bit_is_clear(UCSR0B, UDRIE0)) {
       UDR0 = getch();
       UCSR0B |= _BV(UDRIE0);
     }
@@ -56,10 +46,8 @@ int serial_putchar(char c, FILE *stream)
 }
 
 int not_real = 'a';
-int serial_getchar(FILE *stream)
-{
-  if (not_real > 'z')
-  {
+int serial_getchar(FILE *stream) {
+  if (not_real > 'z') {
     not_real = 'a';
   }
 
