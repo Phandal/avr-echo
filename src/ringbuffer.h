@@ -7,8 +7,8 @@
 
 typedef struct
 {
-  uint8_t write;
-  uint8_t read;
+  volatile uint8_t write;
+  volatile uint8_t read;
 } ring_buffer_t;
 
 /**

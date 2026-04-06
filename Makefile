@@ -1,4 +1,4 @@
-OBJS = build/main.o build/ringbuffer.o
+OBJS = build/main.o build/ringbuffer.o build/serial.o
 MMCU = atmega328p
 CFLAGS = -Wall -Werror -g
 BIN = build/echo.elf

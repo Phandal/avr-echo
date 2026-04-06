@@ -10,10 +10,9 @@ char getch()
     return 0;
   }
 
-  uint8_t next_read = (rb.read + 1) % RING_BUFFER_SIZE;
-
   char c = buffer[rb.read];
-  rb.read = next_read;
+  rb.read = (rb.read + 1) % RING_BUFFER_SIZE;
+  ;
   return c;
 }
 
