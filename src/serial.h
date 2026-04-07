@@ -13,8 +13,6 @@
 #include <stdio.h>
 #include <util/setbaud.h>
 
-#include "ringbuffer.h"
-
 /**
  * @brief Initialize the serial communication device
  */

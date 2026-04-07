@@ -1,40 +1,34 @@
 #include "ringbuffer.h"
 
 static volatile ring_buffer_t rb;
-static char buffer[RING_BUFFER_SIZE] = {0};
 
-char getch()
-{
-  if (rb.read == rb.write)
-  {
+char getch() {
+  if (rb.tail == rb.head) {
     return 0;
   }
 
-  char c = buffer[rb.read];
-  rb.read = (rb.read + 1) % RING_BUFFER_SIZE;
+  char c = rb.buffer[rb.tail];
+  rb.tail = (rb.tail + 1) % RING_BUFFER_SIZE;
   ;
   return c;
 }
 
-char peekch()
-{
-  if (rb.read == rb.write)
-  {
+char peekch() {
+  if (rb.tail == rb.head) {
     return 0;
   }
 
-  return buffer[rb.read];
+  return rb.buffer[rb.tail];
 }
 
-void putch(char c)
-{
+void putch(char c) {
 
-  uint8_t next_write = (rb.write + 1) % RING_BUFFER_SIZE;
+  uint8_t next_write = (rb.head + 1) % RING_BUFFER_SIZE;
 
   // Block until writing is ready
-  while (next_write == rb.read)
+  while (next_write == rb.tail)
     ;
 
-  buffer[rb.write] = c;
-  rb.write = next_write;
+  rb.buffer[rb.head] = c;
+  rb.head = next_write;
 }

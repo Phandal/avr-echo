@@ -5,10 +5,10 @@
 
 #define RING_BUFFER_SIZE 64
 
-typedef struct
-{
-  volatile uint8_t write;
-  volatile uint8_t read;
+typedef struct {
+  char buffer[RING_BUFFER_SIZE];
+  uint8_t head;
+  uint8_t tail;
 } ring_buffer_t;
 
 /**

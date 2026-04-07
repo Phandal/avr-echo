@@ -6,15 +6,14 @@
 
 #include "serial.h"
 
-static FILE rb_stream = FDEV_SETUP_STREAM(serial_putchar, serial_getchar, _FDEV_SETUP_RW);
+static FILE rb_stream =
+    FDEV_SETUP_STREAM(serial_putchar, serial_getchar, _FDEV_SETUP_RW);
 
-int main(void)
-{
+int main(void) {
   serial_init();
   stdin = stdout = &rb_stream;
 
-  while (1)
-  {
+  while (1) {
     int c = getchar();
     putchar(c);
     _delay_ms(50);

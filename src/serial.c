@@ -2,12 +2,14 @@
 
 #include <avr/interrupt.h>
 
+#include "ringbuffer.h"
+
 void serial_init(void) {
   UBRR0H = UBRRH_VALUE;
   UBRR0L = UBRRL_VALUE;
 
   // Turn on the transmiter and set character size to 8
-  UCSR0B |= _BV(TXEN0);
+  UCSR0B |= _BV(TXEN0) | _BV(RXEN0);
   UCSR0C |= _BV(UCSZ00) | _BV(UCSZ01);
 
   // Turn on interupts
@@ -16,6 +18,7 @@ void serial_init(void) {
 
 ISR(USART_UDRE_vect) {
   char c = getch();
+
   if (c == 0) {
     // Clear the interrupt flag from happening
     UCSR0B &= ~_BV(UDRIE0);
@@ -26,8 +29,8 @@ ISR(USART_UDRE_vect) {
 }
 
 int serial_putchar(char c, FILE *stream) {
-
   char p = peekch();
+
   // Start of transmission means nothing in buffer
   if (p == 0 && bit_is_set(UCSR0A, UDRE0)) {
     UDR0 = (uint8_t)c;
@@ -45,11 +48,9 @@ int serial_putchar(char c, FILE *stream) {
   return 0;
 }
 
-int not_real = 'a';
 int serial_getchar(FILE *stream) {
-  if (not_real > 'z') {
-    not_real = 'a';
-  }
+  while (bit_is_clear(UCSR0A, RXC0))
+    ;
 
-  return not_real++;
+  return UDR0;
 }
