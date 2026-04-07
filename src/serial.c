@@ -21,10 +21,10 @@ ISR(USART_UDRE_vect) {
   char c = getch();
 
   if (c == 0) {
-    // Clear the interrupt flag from happening
+    // Clear the interrupt flag
     UCSR0B &= ~_BV(UDRIE0);
   } else {
-    // Load the data register with character to send
+    // Load the data register with next character to send
     UDR0 = c;
   }
 }
@@ -32,15 +32,13 @@ ISR(USART_UDRE_vect) {
 int serial_putchar(char c, FILE *stream) {
   char p = peekch();
 
-  // Start of transmission means nothing in buffer
-  if (p == 0 && bit_is_set(UCSR0A, UDRE0)) {
+  if (p == 0 && bit_is_set(UCSR0A, UDRE0)) { // Start of transmission means nothing in buffer
     UDR0 = (uint8_t)c;
     UCSR0B |= _BV(UDRIE0);
   } else {
     putch(c);
 
-    // Transmission has completed and buffer is not empty
-    if (p != 0 && bit_is_clear(UCSR0B, UDRIE0)) {
+    if (p != 0 && bit_is_clear(UCSR0B, UDRIE0)) { // Transmission has completed and buffer is not empty
       UDR0 = getch();
       UCSR0B |= _BV(UDRIE0);
     }
