@@ -15,6 +15,7 @@ int main(void) {
 
   while (1) {
     // printf("Hello world ");
+    // _delay_ms(1000);
     int c = getchar();
     putchar(c);
   }

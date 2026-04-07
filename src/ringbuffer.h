@@ -14,12 +14,12 @@ typedef struct {
 /**
  * @brief Get a character from the ring buffer or \0 if empty
  */
-char getch();
+int getch();
 
 /**
  * @brief View a character from the ring buffer without advancing read head
  */
-char peekch();
+int peekch();
 
 /**
  * @brief Put a character into the ring buffer

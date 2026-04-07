@@ -2,20 +2,20 @@
 
 static volatile ring_buffer_t rb;
 
-char getch() {
+int getch() {
   if (rb.tail == rb.head) {
-    return 0;
+    return -1;
   }
 
-  char c = rb.buffer[rb.tail];
+  int c = rb.buffer[rb.tail];
   rb.tail = (rb.tail + 1) % RING_BUFFER_SIZE;
   ;
   return c;
 }
 
-char peekch() {
+int peekch() {
   if (rb.tail == rb.head) {
-    return 0;
+    return -1;
   }
 
   return rb.buffer[rb.tail];

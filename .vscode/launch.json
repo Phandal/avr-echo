@@ -8,7 +8,7 @@
       "program": "${workspaceFolder}/build/echo.elf",
       "cwd": "${workspaceFolder}",
       "MIMode": "gdb",
-      "miDebuggerPath": "/opt/homebrew/bin/avr-gdb",
+      "miDebuggerPath": "avr-gdb",
       "miDebuggerServerAddress": "localhost:3333"
     }
   ]
