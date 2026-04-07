@@ -14,9 +14,10 @@ int main(void) {
   stdin = stdout = &rb_stream;
 
   while (1) {
-    int c = getchar();
-    putchar(c);
-    _delay_ms(50);
+    // int c = getchar();
+    printf("Hello world ");
+    // printf("CHAR: %c | ", c);
+    // putchar(c);
   }
 
   return 0;

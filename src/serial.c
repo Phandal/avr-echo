@@ -1,6 +1,7 @@
 #include "serial.h"
 
 #include <avr/interrupt.h>
+#include <avr/sfr_defs.h>
 
 #include "ringbuffer.h"
 
@@ -8,11 +9,11 @@ void serial_init(void) {
   UBRR0H = UBRRH_VALUE;
   UBRR0L = UBRRL_VALUE;
 
-  // Turn on the transmiter and set character size to 8
+  // Turn on the transmiter/receiver and set character size to 8
   UCSR0B |= _BV(TXEN0) | _BV(RXEN0);
   UCSR0C |= _BV(UCSZ00) | _BV(UCSZ01);
 
-  // Turn on interupts
+  // Turn on interrupts
   sei();
 }
 
@@ -49,8 +50,7 @@ int serial_putchar(char c, FILE *stream) {
 }
 
 int serial_getchar(FILE *stream) {
-  while (bit_is_clear(UCSR0A, RXC0))
-    ;
+  loop_until_bit_is_set(UCSR0A, RXC0);
 
   return UDR0;
 }
