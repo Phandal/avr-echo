@@ -30,20 +30,33 @@ ISR(USART_UDRE_vect) {
 }
 
 int serial_putchar(char c, FILE *stream) {
+  if (c == 0x7F) {
+    c = '\b';
+  }
+
   char p = peekch();
 
-  if (p == -1 && (bit_is_set(UCSR0A, UDRE0) || bit_is_clear(UCSR0B, UDRIE0))) { // Start of transmission means nothing in buffer
+  if (p == -1 &&
+      (bit_is_set(UCSR0A, UDRE0) ||
+       bit_is_clear(UCSR0B,
+                    UDRIE0))) { // Start of transmission means nothing in buffer
     UDR0 = (uint8_t)c;
     UCSR0B |= _BV(UDRIE0);
   } else {
     putch(c);
 
-    if (p != -1 && bit_is_clear(UCSR0B, UDRIE0)) { // Transmission has completed and buffer is not empty
+    if (p != -1 &&
+        bit_is_clear(
+            UCSR0B,
+            UDRIE0)) { // Transmission has completed and buffer is not empty
       UDR0 = getch();
       UCSR0B |= _BV(UDRIE0);
     }
   }
 
+  if (c == '\r') {
+    serial_putchar('\n', stream);
+  }
   return 0;
 }
 

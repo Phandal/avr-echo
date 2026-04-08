@@ -21,3 +21,7 @@ build:
 .PHONY: clean
 clean:
 	@rm -rf build/*
+
+.PHONY: flash
+flash:
+	scripts/flash

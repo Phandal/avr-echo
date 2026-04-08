@@ -1,0 +1,8 @@
+#! /bin/bash
+
+if [ -z $AVRPORT ]; then
+  echo -e "AVRPORT is not set!"
+  exit 1
+fi
+
+avrdude -c arduino -b 115200 -p atmega328p -D -P $AVRPORT -U flash:w:build/echo.hex:i
